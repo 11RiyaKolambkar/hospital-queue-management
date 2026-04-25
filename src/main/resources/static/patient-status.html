@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Check Your Token Status</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: Arial;
+            background-color: #eaf4fb;
+        }
+        .navbar {
+            background-color: #1A6B9A;
+            padding: 15px 30px;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+        .section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+        .section h2 {
+            color: #1A6B9A;
+            margin-bottom: 10px;
+        }
+        .section p {
+            color: #888;
+            font-size: 13px;
+            margin-bottom: 25px;
+        }
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            margin-bottom: 15px;
+        }
+        input:focus { border-color: #1A6B9A; }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #1A6B9A;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .result {
+            margin-top: 25px;
+            display: none;
+        }
+        .token-card {
+            background-color: #eaf4fb;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+        .token-number {
+            font-size: 48px;
+            font-weight: bold;
+            color: #1A6B9A;
+        }
+        .token-label {
+            color: #888;
+            font-size: 13px;
+        }
+        .badge {
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 10px;
+        }
+        .badge-waiting { background-color: #fff3cd; color: #856404; }
+        .badge-consulted { background-color: #d1e7dd; color: #0f5132; }
+        .appointment-row {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            text-align: left;
+        }
+        .appointment-row p {
+            color: #333;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        .not-found {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 15px;
+            display: none;
+        }
+        .back-link {
+            display: block;
+            margin-top: 20px;
+            color: #1A6B9A;
+            text-decoration: none;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="navbar">
+    Hospital Queue Management - Patient Portal
+</div>
+
+<div class="container">
+    <div class="section">
+        <h2>Check Your Token Status</h2>
+        <p>Enter your name to see your appointment and token number</p>
+
+        <input type="text" id="searchName" placeholder="Enter your name" />
+        <button onclick="checkStatus()">Check Status</button>
+
+        <div class="not-found" id="notFound">
+            No appointment found for this name. Please contact the receptionist.
+        </div>
+
+        <div class="result" id="result">
+            <h3 style="color:#1A6B9A;margin-bottom:15px;">Your Appointments</h3>
+            <div id="appointmentResults"></div>
+        </div>
+
+        <a href="login.html" class="back-link">Back to Login</a>
+    </div>
+</div>
+
+<script>
+    function checkStatus() {
+        const name = document.getElementById("searchName").value.trim();
+        if(name === "") {
+            alert("Please enter your name!");
+            return;
+        }
+
+        fetch("http://localhost:8080/appointments/all")
+        .then(res => res.json())
+        .then(data => {
+            const filtered = data.filter(a =>
+                a.patientName.toLowerCase() === name.toLowerCase()
+            );
+
+            const resultDiv = document.getElementById("appointmentResults");
+            const notFound = document.getElementById("notFound");
+            const result = document.getElementById("result");
+
+            resultDiv.innerHTML = "";
+
+            if(filtered.length === 0) {
+                notFound.style.display = "block";
+                result.style.display = "none";
+            } else {
+                notFound.style.display = "none";
+                result.style.display = "block";
+
+                filtered.forEach(a => {
+                    resultDiv.innerHTML += `
+                        <div class="appointment-row">
+                            <div class="token-card">
+                                <div class="token-number">${a.tokenNumber}</div>
+                                <div class="token-label">Your Token Number</div>
+                            </div>
+                            <p><b>Doctor:</b> ${a.doctorName}</p>
+                            <p><b>Status:</b> <span class="badge ${a.status === 'Waiting' ? 'badge-waiting' : 'badge-consulted'}">${a.status}</span></p>
+                        </div>
+                    `;
+                });
+            }
+        });
+    }
+</script>
+</body>
+</html>
