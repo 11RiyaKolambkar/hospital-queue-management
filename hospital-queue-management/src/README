@@ -1,0 +1,46 @@
+# Hospital Queue Management System
+
+A Hospital Queue Management System developed using Spring Boot and MySQL to efficiently manage patient queues and reduce waiting time in hospitals.
+
+## Features
+- Patient registration
+- Queue management system
+- Token generation
+- Patient record management
+- Admin functionality
+- Database connectivity using MySQL
+
+## Technologies Used
+- Java
+- Spring Boot
+- MySQL
+- HTML
+- CSS
+- Maven
+
+## Project Objective
+The objective of this project is to simplify hospital queue handling and improve patient management efficiency through automation.
+
+## Project Structure
+├── src/main/java  
+├── src/main/resources  
+├── src/test/java  
+├── pom.xml  
+└── README.md  
+
+## How to Run the Project
+1. Clone the repository
+2. Open the project in IntelliJ IDEA or VS Code
+3. Configure MySQL database
+4. Run the Spring Boot application
+5. Open the browser and access the application
+
+## Future Enhancements
+- Online appointment booking
+- SMS/email notifications
+- Doctor availability tracking
+- Dashboard analytics
+- Real-time queue updates
+
+## Author
+Riya Kolambkar MCA Student
