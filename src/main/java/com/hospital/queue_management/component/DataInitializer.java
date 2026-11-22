@@ -4,9 +4,11 @@ import com.hospital.queue_management.entity.Appointment;
 import com.hospital.queue_management.entity.Doctor;
 import com.hospital.queue_management.entity.Patient;
 import com.hospital.queue_management.entity.QueueStatus;
+import com.hospital.queue_management.entity.User;
 import com.hospital.queue_management.repository.AppointmentRepository;
 import com.hospital.queue_management.repository.DoctorRepository;
 import com.hospital.queue_management.repository.PatientRepository;
+import com.hospital.queue_management.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -25,8 +27,18 @@ public class DataInitializer implements CommandLineRunner {
     @Autowired
     private AppointmentRepository appointmentRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @Override
     public void run(String... args) {
+        if (userRepository.count() == 0) {
+            userRepository.save(new User("admin", "admin123", "Chief Administrator", "ADMIN"));
+            userRepository.save(new User("reception", "rec123", "OPD Receptionist", "RECEPTIONIST"));
+            userRepository.save(new User("doctor", "doc123", "Dr. Rajesh Sharma", "DOCTOR"));
+            userRepository.save(new User("patient", "patient123", "Rohan Mehta", "PATIENT"));
+        }
+
         if (doctorRepository.count() == 0) {
             Doctor d1 = new Doctor();
             d1.setName("Dr. Rajesh Sharma");

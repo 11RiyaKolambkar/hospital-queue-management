@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hospital Queue Management - Portal Login</title>
+    <title>Hospital Queue Management - Portal Login & Registration</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -19,11 +19,11 @@
         }
         .main-box {
             width: 100%;
-            max-width: 460px;
+            max-width: 480px;
         }
         .header {
             text-align: center;
-            margin-bottom: 28px;
+            margin-bottom: 24px;
         }
         .header .system-title {
             color: #0f766e;
@@ -39,13 +39,13 @@
         .option-cards {
             display: flex;
             flex-direction: column;
-            gap: 14px;
-            margin-bottom: 24px;
+            gap: 12px;
+            margin-bottom: 20px;
         }
         .option-card {
             background: #ffffff;
             border-radius: 12px;
-            padding: 20px 22px;
+            padding: 18px 20px;
             border: 1px solid #e2e8f0;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
             cursor: pointer;
@@ -59,7 +59,7 @@
         }
         .option-card h3 {
             color: #0f766e;
-            font-size: 17px;
+            font-size: 16px;
             font-weight: 600;
             margin-bottom: 4px;
         }
@@ -68,15 +68,15 @@
             font-size: 13px;
             line-height: 1.4;
         }
-        .login-box {
+        .card-box {
             background: #ffffff;
             border-radius: 12px;
-            padding: 28px;
+            padding: 26px;
             border: 1px solid #e2e8f0;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
             display: none;
         }
-        .login-box h2 {
+        .card-box h2 {
             color: #0f766e;
             margin-bottom: 16px;
             font-size: 19px;
@@ -84,6 +84,7 @@
         }
         .form-group {
             margin-bottom: 14px;
+            text-align: left;
         }
         .form-group label {
             display: block;
@@ -92,20 +93,21 @@
             color: #475569;
             margin-bottom: 6px;
         }
-        input {
+        input, select {
             width: 100%;
             padding: 11px 14px;
             border: 1px solid #cbd5e1;
             border-radius: 8px;
             font-size: 14px;
             outline: none;
+            background: #ffffff;
             transition: border-color 0.15s;
         }
-        input:focus {
+        input:focus, select:focus {
             border-color: #0f766e;
             box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.15);
         }
-        .btn-login {
+        .btn-submit {
             width: 100%;
             padding: 12px;
             background-color: #0f766e;
@@ -119,7 +121,7 @@
             margin-bottom: 10px;
             transition: background 0.15s;
         }
-        .btn-login:hover {
+        .btn-submit:hover {
             background-color: #115e59;
         }
         .btn-back {
@@ -146,8 +148,33 @@
             margin-bottom: 14px;
             display: none;
         }
+        .success {
+            background-color: #f0fdf4;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+            padding: 9px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            margin-bottom: 14px;
+            display: none;
+        }
+        .toggle-link {
+            text-align: center;
+            margin-top: 14px;
+            font-size: 13px;
+            color: #64748b;
+        }
+        .toggle-link a {
+            color: #0f766e;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .toggle-link a:hover {
+            text-decoration: underline;
+        }
         .demo-credentials {
-            margin-top: 18px;
+            margin-top: 16px;
             padding: 12px;
             background: #f8fafc;
             border-radius: 8px;
@@ -155,6 +182,29 @@
             font-size: 12px;
             color: #64748b;
             line-height: 1.6;
+        }
+        .register-callout {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 16px;
+            border: 2px dashed #0f766e;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 20px;
+        }
+        .register-callout:hover {
+            background: #f0fdfa;
+        }
+        .register-callout strong {
+            color: #0f766e;
+            font-size: 15px;
+            display: block;
+            margin-bottom: 2px;
+        }
+        .register-callout span {
+            color: #64748b;
+            font-size: 12px;
         }
         .footer-links {
             text-align: center;
@@ -178,33 +228,41 @@
 <div class="main-box">
     <div class="header">
         <div class="system-title">Hospital Queue Management</div>
-        <div class="system-sub">Production Healthcare Scheduling and Queue System</div>
+        <div class="system-sub">Healthcare Scheduling and Queue Automation</div>
     </div>
 
     <!-- Role Selection -->
-    <div class="option-cards" id="roleSelection">
-        <div class="option-card" onclick="showLogin('staff')">
-            <h3>Staff & Receptionist Portal</h3>
-            <p>Register patients, manage doctors, schedule appointments, and monitor hospital queues.</p>
+    <div id="roleSelection">
+        <div class="register-callout" onclick="showRegister()">
+            <strong>Create New Account / Register</strong>
+            <span>Register as Staff, Receptionist, Doctor, or Patient</span>
         </div>
-        <div class="option-card" onclick="showLogin('doctor')">
-            <h3>Doctor Consultation Desk</h3>
-            <p>Access assigned patient queue, call waiting tokens, and record completed consultations.</p>
-        </div>
-        <div class="option-card" onclick="window.location.href='patient-status.html'">
-            <h3>Patient Token Status</h3>
-            <p>Check assigned token numbers, current queue position, and estimated consultation state.</p>
-        </div>
-        <div class="option-card" onclick="window.location.href='live-queue.html'">
-            <h3>Live Queue Display Screen</h3>
-            <p>Public waiting room monitor displaying active consultations and upcoming queue tokens.</p>
+
+        <div class="option-cards">
+            <div class="option-card" onclick="showLogin('staff')">
+                <h3>Staff & Receptionist Portal</h3>
+                <p>Register patients, manage doctors, schedule appointments, and oversee hospital queues.</p>
+            </div>
+            <div class="option-card" onclick="showLogin('doctor')">
+                <h3>Doctor Consultation Desk</h3>
+                <p>Access assigned patient queue, call waiting tokens, and record completed consultations.</p>
+            </div>
+            <div class="option-card" onclick="window.location.href='patient-status.html'">
+                <h3>Patient Token Status</h3>
+                <p>Check assigned token numbers, current queue position, and consultation state.</p>
+            </div>
+            <div class="option-card" onclick="window.location.href='live-queue.html'">
+                <h3>Live OPD TV Display Screen</h3>
+                <p>Public waiting room monitor displaying active consultations and upcoming queue tokens.</p>
+            </div>
         </div>
     </div>
 
     <!-- Login Form -->
-    <div class="login-box" id="loginBox">
-        <h2 id="loginTitle">Staff Login</h2>
-        <div class="error" id="errorMsg">Invalid username or password. Please verify credentials.</div>
+    <div class="card-box" id="loginBox">
+        <h2 id="loginTitle">Account Sign In</h2>
+        <div class="error" id="errorMsg">Invalid username or password.</div>
+        <div class="success" id="loginSuccessMsg"></div>
         
         <div class="form-group">
             <label for="username">Username</label>
@@ -215,14 +273,62 @@
             <input type="password" id="password" placeholder="Enter password" autocomplete="current-password" />
         </div>
         
-        <button class="btn-login" onclick="login()">Sign In</button>
+        <button class="btn-submit" onclick="login()">Sign In</button>
         <button class="btn-back" onclick="showRoleSelection()">Back to Portal Selection</button>
 
-        <div class="demo-credentials" id="demoCredentialsInfo">
-            <strong>Standard Credentials:</strong><br>
-            Staff: admin / admin123 (Full Access)<br>
-            Reception: reception / rec123 (Patient & Appointment Booking)<br>
-            Doctor: doctor / doc123 (OPD Consultation Desk)
+        <div class="toggle-link">
+            Don't have an account? <a onclick="showRegister()">Register New User</a>
+        </div>
+
+        <div class="demo-credentials">
+            <strong>Standard Pre-configured Logins:</strong><br>
+            Staff Admin: admin / admin123<br>
+            Receptionist: reception / rec123<br>
+            Doctor Desk: doctor / doc123
+        </div>
+    </div>
+
+    <!-- Registration Form -->
+    <div class="card-box" id="registerBox">
+        <h2>Register New Account</h2>
+        <div class="error" id="regErrorMsg"></div>
+        <div class="success" id="regSuccessMsg"></div>
+
+        <div class="form-group">
+            <label for="regFullName">Full Name</label>
+            <input type="text" id="regFullName" placeholder="e.g. Dr. Ramesh Gupta or Anita Sharma" />
+        </div>
+
+        <div class="form-group">
+            <label for="regRole">Role</label>
+            <select id="regRole" onchange="toggleSpecializationField()">
+                <option value="RECEPTIONIST">Receptionist</option>
+                <option value="ADMIN">Staff / Administrator</option>
+                <option value="DOCTOR">Doctor (OPD Specialist)</option>
+                <option value="PATIENT">Patient</option>
+            </select>
+        </div>
+
+        <div class="form-group" id="specializationGroup" style="display:none;">
+            <label for="regSpecialization">Medical Specialization</label>
+            <input type="text" id="regSpecialization" placeholder="e.g. Cardiology, Neurology, Pediatrics" />
+        </div>
+
+        <div class="form-group">
+            <label for="regUsername">Username</label>
+            <input type="text" id="regUsername" placeholder="Choose a unique username" autocomplete="off" />
+        </div>
+
+        <div class="form-group">
+            <label for="regPassword">Password</label>
+            <input type="password" id="regPassword" placeholder="Create a password" autocomplete="new-password" />
+        </div>
+
+        <button class="btn-submit" onclick="register()">Create Account</button>
+        <button class="btn-back" onclick="showRoleSelection()">Back to Portal Selection</button>
+
+        <div class="toggle-link">
+            Already have an account? <a onclick="showLogin('staff')">Sign In</a>
         </div>
     </div>
 
@@ -233,54 +339,152 @@
 </div>
 
 <script>
-    let selectedRole = "";
+    let selectedRole = "staff";
 
     function showLogin(role) {
         selectedRole = role;
         document.getElementById("roleSelection").style.display = "none";
+        document.getElementById("registerBox").style.display = "none";
         document.getElementById("loginBox").style.display = "block";
         document.getElementById("loginTitle").innerText =
-            role === "staff" ? "Staff & Receptionist Login" : "Doctor Consultation Desk Login";
+            role === "staff" ? "Staff & Receptionist Sign In" : "Doctor Consultation Desk Sign In";
         document.getElementById("errorMsg").style.display = "none";
+        document.getElementById("loginSuccessMsg").style.display = "none";
         document.getElementById("username").value = "";
         document.getElementById("password").value = "";
     }
 
-    function showRoleSelection() {
-        document.getElementById("roleSelection").style.display = "flex";
+    function showRegister() {
+        document.getElementById("roleSelection").style.display = "none";
         document.getElementById("loginBox").style.display = "none";
+        document.getElementById("registerBox").style.display = "block";
+        document.getElementById("regErrorMsg").style.display = "none";
+        document.getElementById("regSuccessMsg").style.display = "none";
+    }
+
+    function showRoleSelection() {
+        document.getElementById("roleSelection").style.display = "block";
+        document.getElementById("loginBox").style.display = "none";
+        document.getElementById("registerBox").style.display = "none";
+    }
+
+    function toggleSpecializationField() {
+        const role = document.getElementById("regRole").value;
+        const specGroup = document.getElementById("specializationGroup");
+        specGroup.style.display = (role === "DOCTOR") ? "block" : "none";
+    }
+
+    function register() {
+        const fullName = document.getElementById("regFullName").value.trim();
+        const role = document.getElementById("regRole").value;
+        const specialization = document.getElementById("regSpecialization").value.trim();
+        const username = document.getElementById("regUsername").value.trim();
+        const password = document.getElementById("regPassword").value.trim();
+        const errEl = document.getElementById("regErrorMsg");
+        const succEl = document.getElementById("regSuccessMsg");
+
+        errEl.style.display = "none";
+        succEl.style.display = "none";
+
+        if(!username || !password) {
+            errEl.innerText = "Username and password are required.";
+            errEl.style.display = "block";
+            return;
+        }
+
+        fetch("/auth/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                fullName: fullName,
+                role: role,
+                specialization: specialization,
+                username: username,
+                password: password
+            })
+        })
+        .then(async res => {
+            const data = await res.json();
+            if(!res.ok) {
+                throw new Error(data.message || "Registration failed");
+            }
+            return data;
+        })
+        .then(data => {
+            succEl.innerText = "Account created successfully for " + data.username + "! Redirecting to login...";
+            succEl.style.display = "block";
+            setTimeout(() => {
+                showLogin(role === "DOCTOR" ? "doctor" : "staff");
+                document.getElementById("username").value = username;
+            }, 1200);
+        })
+        .catch(err => {
+            errEl.innerText = err.message;
+            errEl.style.display = "block";
+        });
     }
 
     function login() {
         const username = document.getElementById("username").value.trim();
         const password = document.getElementById("password").value.trim();
+        const errEl = document.getElementById("errorMsg");
+        errEl.style.display = "none";
 
-        if(selectedRole === "staff") {
-            if(username === "admin" && password === "admin123") {
-                localStorage.setItem("role", "admin");
-                localStorage.setItem("username", "admin");
-                window.location.href = "index.html";
-            } else if(username === "reception" && password === "rec123") {
-                localStorage.setItem("role", "receptionist");
-                localStorage.setItem("username", "reception");
-                window.location.href = "index.html";
-            } else {
-                document.getElementById("errorMsg").style.display = "block";
+        if(!username || !password) {
+            errEl.innerText = "Please enter both username and password.";
+            errEl.style.display = "block";
+            return;
+        }
+
+        fetch("/auth/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username: username, password: password })
+        })
+        .then(async res => {
+            const data = await res.json();
+            if(!res.ok) {
+                throw new Error(data.message || "Invalid username or password");
             }
-        } else if(selectedRole === "doctor") {
-            if(username === "doctor" && password === "doc123") {
+            return data;
+        })
+        .then(user => {
+            localStorage.setItem("role", user.role);
+            localStorage.setItem("username", user.username);
+            localStorage.setItem("fullName", user.fullName || user.username);
+
+            if(user.role === "doctor") {
+                window.location.href = "doctor-dashboard.html";
+            } else if(user.role === "patient") {
+                window.location.href = "patient-status.html";
+            } else {
+                window.location.href = "index.html";
+            }
+        })
+        .catch(err => {
+            // Fallback for pre-configured offline accounts if backend call fails
+            if(selectedRole === "staff" && ((username === "admin" && password === "admin123") || (username === "reception" && password === "rec123"))) {
+                localStorage.setItem("role", username === "admin" ? "admin" : "receptionist");
+                localStorage.setItem("username", username);
+                window.location.href = "index.html";
+            } else if(selectedRole === "doctor" && username === "doctor" && password === "doc123") {
                 localStorage.setItem("role", "doctor");
                 localStorage.setItem("username", "doctor");
                 window.location.href = "doctor-dashboard.html";
             } else {
-                document.getElementById("errorMsg").style.display = "block";
+                errEl.innerText = err.message || "Invalid credentials.";
+                errEl.style.display = "block";
             }
-        }
+        });
     }
 
     document.addEventListener("keydown", function(event) {
-        if (event.key === "Enter" && document.getElementById("loginBox").style.display === "block") {
-            login();
+        if(event.key === "Enter") {
+            if(document.getElementById("loginBox").style.display === "block") {
+                login();
+            } else if(document.getElementById("registerBox").style.display === "block") {
+                register();
+            }
         }
     });
 </script>
