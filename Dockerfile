@@ -17,9 +17,7 @@ USER appuser
 COPY --from=builder /app/target/*.jar app.jar
 
 ENV PORT=8080 \
-    DB_URL=jdbc:mysql://localhost:3306/hospital_queue?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC \
-    DB_USERNAME=root \
-    DB_PASSWORD=root123
+    SPRING_PROFILES_ACTIVE=h2
 
 EXPOSE 8080
 
