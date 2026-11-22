@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live OPD Queue Display Screen - Hospital Management</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #0b132b;
+            color: #f8fafc;
+            min-height: 100vh;
+            padding: 24px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #1c2541;
+            margin-bottom: 24px;
+        }
+        .header-title {
+            font-size: 26px;
+            font-weight: 800;
+            color: #38bdf8;
+            letter-spacing: -0.5px;
+        }
+        .header-sub {
+            font-size: 14px;
+            color: #94a3b8;
+            margin-top: 4px;
+        }
+        .clock-box {
+            text-align: right;
+        }
+        .clock {
+            font-size: 24px;
+            font-weight: 700;
+            color: #f8fafc;
+            font-variant-numeric: tabular-nums;
+        }
+        .date {
+            font-size: 13px;
+            color: #94a3b8;
+        }
+        .sync-tag {
+            display: inline-block;
+            background: #0284c7;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-top: 4px;
+        }
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1.3fr 1fr;
+            gap: 24px;
+        }
+        .card-panel {
+            background: #1c2541;
+            border-radius: 14px;
+            padding: 24px;
+            border: 1px solid #334155;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+        .panel-heading {
+            font-size: 18px;
+            font-weight: 700;
+            color: #38bdf8;
+            margin-bottom: 18px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #334155;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .serving-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+        }
+        .serving-card {
+            background: #0b132b;
+            border: 2px solid #0284c7;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 14px rgba(2, 132, 199, 0.2);
+            animation: pulse-border 2s infinite;
+        }
+        @keyframes pulse-border {
+            0%, 100% { border-color: #0284c7; }
+            50% { border-color: #38bdf8; }
+        }
+        .serving-token {
+            font-size: 58px;
+            font-weight: 900;
+            color: #38bdf8;
+            line-height: 1;
+            margin-bottom: 6px;
+        }
+        .serving-patient {
+            font-size: 18px;
+            font-weight: 700;
+            color: #f8fafc;
+            margin-bottom: 4px;
+        }
+        .serving-doctor {
+            font-size: 14px;
+            color: #94a3b8;
+        }
+        .serving-badge {
+            display: inline-block;
+            margin-top: 10px;
+            background: #16a34a;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        th {
+            background-color: #0b132b;
+            color: #94a3b8;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #334155;
+        }
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #334155;
+            color: #e2e8f0;
+        }
+        tr:hover { background-color: #0b132b; }
+        .token-pill {
+            background: #0284c7;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 12px;
+        }
+        .badge-wait {
+            background: #854d0e;
+            color: #fef08a;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .empty-display {
+            text-align: center;
+            padding: 30px;
+            color: #64748b;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div>
+        <div class="header-title">HOSPITAL OUTPATIENT DEPARTMENT (OPD)</div>
+        <div class="header-sub">Public Queue Status & Token Calling Display Screen</div>
+    </div>
+    <div class="clock-box">
+        <div class="clock" id="liveClock">00:00:00</div>
+        <div class="date" id="liveDate">Current Date</div>
+        <div class="sync-tag">LIVE AUTO-SYNC (5s)</div>
+    </div>
+</div>
+
+<div class="main-grid">
+    <!-- Active Token Display -->
+    <div class="card-panel">
+        <div class="panel-heading">
+            <span>NOW SERVING / ACTIVE CONSULTATIONS</span>
+            <span style="font-size:12px;color:#94a3b8;">Proceed to Chamber</span>
+        </div>
+        <div class="serving-grid" id="servingContainer">
+            <div class="empty-display">No consultations actively in progress. Please check upcoming tokens.</div>
+        </div>
+    </div>
+
+    <!-- Upcoming Queue -->
+    <div class="card-panel">
+        <div class="panel-heading">
+            <span>UPCOMING TOKENS (WAITING LIST)</span>
+            <span style="font-size:12px;color:#94a3b8;" id="waitingCountDisplay">0 Waiting</span>
+        </div>
+        <table>
+            <thead>
+            <tr>
+                <th>Token</th>
+                <th>Patient</th>
+                <th>Doctor</th>
+                <th>Status</th>
+            </tr>
+            </thead>
+            <tbody id="waitingTable">
+            <tr><td colspan="4" class="empty-display">No waiting patients in queue.</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    function updateClock() {
+        const now = new Date();
+        document.getElementById("liveClock").innerText = now.toLocaleTimeString();
+        document.getElementById("liveDate").innerText = now.toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' });
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    function fetchQueue() {
+        fetch("/appointments/all")
+        .then(res => res.json())
+        .then(data => {
+            const inProgress = data.filter(a => a.status === "In Progress");
+            const waiting = data.filter(a => a.status === "Waiting");
+
+            // Update Serving Area
+            const servingEl = document.getElementById("servingContainer");
+            if(inProgress.length === 0) {
+                servingEl.innerHTML = `<div class="empty-display">No tokens currently called into consulting chambers.</div>`;
+            } else {
+                servingEl.innerHTML = "";
+                inProgress.forEach(a => {
+                    servingEl.innerHTML += `
+                        <div class="serving-card">
+                            <div class="serving-token">#${a.tokenNumber}</div>
+                            <div class="serving-patient">${a.patientName}</div>
+                            <div class="serving-doctor">Doctor: ${a.doctorName}</div>
+                            <div class="serving-badge">NOW CONSULTING</div>
+                        </div>
+                    `;
+                });
+            }
+
+            // Update Waiting Table
+            const waitingEl = document.getElementById("waitingTable");
+            document.getElementById("waitingCountDisplay").innerText = waiting.length + " Waiting";
+            if(waiting.length === 0) {
+                waitingEl.innerHTML = `<tr><td colspan="4" class="empty-display">Queue clear. No patients currently waiting.</td></tr>`;
+            } else {
+                waitingEl.innerHTML = "";
+                waiting.slice(0, 10).forEach(a => {
+                    waitingEl.innerHTML += `
+                        <tr>
+                            <td><span class="token-pill">Token #${a.tokenNumber}</span></td>
+                            <td><strong>${a.patientName}</strong></td>
+                            <td>${a.doctorName}</td>
+                            <td><span class="badge-wait">Waiting</span></td>
+                        </tr>
+                    `;
+                });
+            }
+        })
+        .catch(err => console.error("Error updating queue screen:", err));
+    }
+
+    fetchQueue();
+    setInterval(fetchQueue, 5000);
+</script>
+</body>
+</html>
