@@ -10,7 +10,7 @@ RUN mvn clean package -DskipTests --no-transfer-progress
 FROM eclipse-temurin:17-jre
 WORKDIR /app
 
-COPY --from=builder /app/target/*.jar app.jar
+COPY --from=builder /app/target/queue-management-0.0.1-SNAPSHOT.jar /app/app.jar
 
 ENV PORT=8080 \
     SPRING_PROFILES_ACTIVE=h2 \
@@ -18,4 +18,4 @@ ENV PORT=8080 \
 
 EXPOSE 8080
 
-ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -Dserver.port=${PORT:-8080} -Djava.security.egd=file:/dev/./urandom -jar app.jar"]
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -Dserver.port=${PORT:-8080} -Djava.security.egd=file:/dev/./urandom -jar /app/app.jar"]
