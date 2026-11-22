@@ -2,17 +2,12 @@
 FROM maven:3.9-eclipse-temurin-17 AS builder
 WORKDIR /app
 COPY pom.xml .
-RUN mvn dependency:go-offline -B --no-transfer-progress
 COPY src ./src
 RUN mvn clean package -DskipTests --no-transfer-progress
 
 # Production Runtime Stage
-FROM eclipse-temurin:17-jre-alpine
+FROM eclipse-temurin:17-jre
 WORKDIR /app
-
-# Run as non-root user for container security
-RUN addgroup -S appgroup && adduser -S appuser -G appgroup
-USER appuser
 
 COPY --from=builder /app/target/*.jar app.jar
 
